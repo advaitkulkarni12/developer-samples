@@ -22,7 +22,7 @@ python setup.py install --user
 
 This step is **not** mandatory. 
 
-Then, you need to import the package:
+Then, you need to import the package in any file where you need it:
 ```python
 import nviso_api
 ```
@@ -50,6 +50,9 @@ We provide two examples so that you can get an idea of how to use the API:
 
 - stream_upload_json.py starts a session, processes a stream of 27 photos and finally performs a query. It again prints the result in json format.
 
+In order to run these programs, open a command prompt window in the directory where the files are located and type :
+```shell
+python program_name.py
 ## How to use
 
 In the next section [Documentation for API Endpoints](#documentation-for-api-endpoints), you will find all the endpoints you can use. If you click on the link, it will redirect you to a page where you will find a small explanation, a very simple example and all the parameters. 
