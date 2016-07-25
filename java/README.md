@@ -54,38 +54,16 @@ Then manually install the following JARs:
 
 ## Getting Started
 
-Please follow the [installation](#installation) instruction and execute the following Java code:
+Please follow the [installation](#installation) instruction, open a comand prompt window in the directory where the file pom.xml is located and run the following command:
 
-```java
-
-import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.MonitoringApi;
-
-import java.io.File;
-import java.util.*;
-
-public class MonitoringApiExample {
-
-    public static void main(String[] args) {
-        
-        MonitoringApi apiInstance = new MonitoringApi();
-        String ipAddress = "ipAddress_example"; // String | IP Address of the server where the worker is.
-        String port = "port_example"; // String | Port to the Rest API.
-        String appId = "appId_example"; // String | Application ID. Used for the authentication
-        String appKey = "appKey_example"; // String | Application key. Used for the authentication
-        try {
-            ResponseServer result = apiInstance.health(ipAddress, port, appId, appKey);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling MonitoringApi#health");
-            e.printStackTrace();
-        }
-    }
-}
-
+```shell
+mvn test
 ```
+This will run all the tests, which are located in src\test\java\io\swagger\client\api. There are three tests that are run :
+- healthTest in MonitoringApiTest.java which just tests the health of all workers. It should print "info: All the workers responded to the PING."
+- photoProcessUploadTest in PhotoApiTest.java which processes a .jpg photo using photoProcessUpload method. The program then extract all emotion intensities from the json and prints the emotion with the highest intensity.
+- streamProcessUploadTest in StreamApiTest.java which starts a session and processes a stream of .jpg photos using streamProcessUpload method. The program then ends the session, performs a query to get the result in json format and extract all emotion intensities for all images and prints each time the emotion with the highest intensity.
+- streamSessionDataTest in StreamApiTest.java which does the same as streamProcessUploadApiTest but just prints the resulting json object in csv format using streamSessionData method.
 
 ## Documentation for API Endpoints
 
@@ -129,4 +107,5 @@ It's recommended to create an instance of `ApiClient` per thread in a multithrea
 ## Author
 
 info@nviso.ch
+
 
