@@ -28,7 +28,7 @@ x_max = 1
 y_min = 0
 y_max = 1
 
-for i in range(1):
+for i in range(27):
     filename = ""
     if i < 10:
         file = "./data/dataStream/RID_105440_00" + str(i) + ".jpg";
