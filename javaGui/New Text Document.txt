@@ -1,0 +1,7 @@
+# Client library for java gui
+
+This library enables to use the java API embedded in a GUI
+
+## Requirements
+
+Building the API client library requires JDK version 7 to be installed.
