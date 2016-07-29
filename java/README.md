@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Building the API client library requires [Maven](https://maven.apache.org/) to be installed.
+Building the API client library requires [Maven](https://maven.apache.org/) version 2.2.0 to be installed.
 
 ## Installation
 
