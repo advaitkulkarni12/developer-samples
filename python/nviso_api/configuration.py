@@ -61,7 +61,7 @@ class Configuration(object):
         Constructor
         """
         # Default Base url
-        self.host = "http://nviso-apiv2-api.nviso.net:8080/nviso/api/v2"
+        self.host = "http://nviso-apiv2-api.nviso.net/nviso/api/v2"
         # Default api client
         self.api_client = None
         # Temp file folder for downloading files

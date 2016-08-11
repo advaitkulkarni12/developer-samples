@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-07-06T18:20:08.762+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-08-02T10:34:05.963+02:00")
 public class StreamApi {
   private ApiClient apiClient;
 
@@ -52,12 +52,14 @@ public class StreamApi {
    * @param xMax Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 (optional)
    * @param yMin Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0 (optional)
    * @param yMax Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 (optional)
+   * @param enableFooter Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session) (optional)
+   * @param dimSecFaces If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session) (optional)
    * @param appId Application ID. Used for the authentication (optional)
    * @param appKey Application key. Used for the authentication (optional)
    * @return String
    * @throws ApiException if fails to make API call
    */
-  public String streamProcessBase64(String base64, String key, Double score, Double time, Double timestamp, String format, String distance, Boolean multipleFaces, Double xMin, Double xMax, Double yMin, Double yMax, String appId, String appKey) throws ApiException {
+  public String streamProcessBase64(String base64, String key, Double score, Double time, Double timestamp, String format, String distance, Boolean multipleFaces, Double xMin, Double xMax, Double yMin, Double yMax, Boolean enableFooter, Boolean dimSecFaces, String appId, String appKey) throws ApiException {
     Object localVarPostBody = base64;
     
     // verify the required parameter 'base64' is set
@@ -89,6 +91,8 @@ public class StreamApi {
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "xMax", xMax));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "yMin", yMin));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "yMax", yMax));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "enableFooter", enableFooter));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "dimSecFaces", dimSecFaces));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "appId", appId));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "appKey", appKey));
 
@@ -124,12 +128,14 @@ public class StreamApi {
    * @param xMax Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 (optional)
    * @param yMin Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0 (optional)
    * @param yMax Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 (optional)
+   * @param enableFooter Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session) (optional)
+   * @param dimSecFaces If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session) (optional)
    * @param appId Application ID. Used for the authentication (optional)
    * @param appKey Application key. Used for the authentication (optional)
    * @return String
    * @throws ApiException if fails to make API call
    */
-  public String streamProcessUpload(File file, String key, Double score, Double time, Double timestamp, String format, String distance, Boolean multipleFaces, Double xMin, Double xMax, Double yMin, Double yMax, String appId, String appKey) throws ApiException {
+  public String streamProcessUpload(File file, String key, Double score, Double time, Double timestamp, String format, String distance, Boolean multipleFaces, Double xMin, Double xMax, Double yMin, Double yMax, Boolean enableFooter, Boolean dimSecFaces, String appId, String appKey) throws ApiException {
     Object localVarPostBody = null;
     
     // verify the required parameter 'file' is set
@@ -161,6 +167,8 @@ public class StreamApi {
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "xMax", xMax));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "yMin", yMin));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "yMax", yMax));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "enableFooter", enableFooter));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "dimSecFaces", dimSecFaces));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "appId", appId));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "appKey", appKey));
 
@@ -198,12 +206,14 @@ public class StreamApi {
    * @param xMax Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 (optional)
    * @param yMin Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0 (optional)
    * @param yMax Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 (optional)
+   * @param enableFooter Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session) (optional)
+   * @param dimSecFaces If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session) (optional)
    * @param appId Application ID. Used for the authentication (optional)
    * @param appKey Application key. Used for the authentication (optional)
    * @return String
    * @throws ApiException if fails to make API call
    */
-  public String streamProcessUrl(String url, String key, Double score, Double time, Double timestamp, String format, String distance, Boolean multipleFaces, Double xMin, Double xMax, Double yMin, Double yMax, String appId, String appKey) throws ApiException {
+  public String streamProcessUrl(String url, String key, Double score, Double time, Double timestamp, String format, String distance, Boolean multipleFaces, Double xMin, Double xMax, Double yMin, Double yMax, Boolean enableFooter, Boolean dimSecFaces, String appId, String appKey) throws ApiException {
     Object localVarPostBody = null;
     
     // verify the required parameter 'url' is set
@@ -236,6 +246,8 @@ public class StreamApi {
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "xMax", xMax));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "yMin", yMin));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "yMax", yMax));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "enableFooter", enableFooter));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "dimSecFaces", dimSecFaces));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "appId", appId));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "appKey", appKey));
 
@@ -361,6 +373,66 @@ public class StreamApi {
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
+   * Render the images and the JSON linked to a session
+   * Return the images and the JSON linked to a session. The JSON correspond to the query endpoint. The images can be raw or rendered.
+   * @param key key to store the processed images in the database. Please use a key generated by the API. (required)
+   * @param render If you want to render the images, set this parameter to true. If set to false, you will receive the raw images. (Default is false) (optional)
+   * @param queryFormat Format of the JSON response. Default is v2-Full. (optional)
+   * @param sortBy This parameter defines how you want to sort the images in the session. Default is timestamp. (optional)
+   * @param limitBy This parameter defines the parameters the API will use to limit the data. Default is timestamp. (optional)
+   * @param startLimit Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) (optional)
+   * @param endLimit Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) (optional)
+   * @param order This parameters defines the order, ascending or descending. Default is ascending (optional)
+   * @param appId Application ID. Used for the authentication (optional)
+   * @param appKey Application key. Used for the authentication (optional)
+   * @return String
+   * @throws ApiException if fails to make API call
+   */
+  public String streamSessionExport(String key, Boolean render, String queryFormat, String sortBy, String limitBy, Double startLimit, Double endLimit, String order, String appId, String appKey) throws ApiException {
+    Object localVarPostBody = null;
+    
+    // verify the required parameter 'key' is set
+    if (key == null) {
+      throw new ApiException(400, "Missing the required parameter 'key' when calling streamSessionExport");
+    }
+    
+    // create path and map variables
+    String localVarPath = "/stream/session/export".replaceAll("\\{format\\}","json");
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "key", key));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "render", render));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "queryFormat", queryFormat));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "sortBy", sortBy));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "limitBy", limitBy));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "startLimit", startLimit));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "endLimit", endLimit));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "order", order));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "appId", appId));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "appKey", appKey));
+
+    
+    
+    final String[] localVarAccepts = {
+      "application/zip"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] {  };
+
+    GenericType<String> localVarReturnType = new GenericType<String>() {};
+    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+      }
+  /**
    * Query the results and get a Graph format
    * Query the results of the session using the key. Get an array of JSONs back in a Graph format. The format charts-json is using the timestamp that the user has provided.
    * @param key key to store the processed images in the database. Please use a key generated by the API. (required)
@@ -405,6 +477,64 @@ public class StreamApi {
     
     final String[] localVarAccepts = {
       "application/json"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] {  };
+
+    GenericType<String> localVarReturnType = new GenericType<String>() {};
+    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+      }
+  /**
+   * Render the images linked to a session
+   * Return the images stored with a given session. The images can be returned as raw or rendered (Emotion shown directly on the images). A zip folder is returned.
+   * @param key key to store the processed images in the database. Please use a key generated by the API. (required)
+   * @param render If you want to render the images, set this parameter to true. If set to false, you will receive the raw images. (Default is false) (optional)
+   * @param sortBy This parameter defines how you want to sort the images in the session. Default is timestamp. (optional)
+   * @param limitBy This parameter defines the parameters the API will use to limit the data. Default is timestamp. (optional)
+   * @param startLimit Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) (optional)
+   * @param endLimit Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) (optional)
+   * @param order This parameters defines the order, ascending or descending. Default is ascending (optional)
+   * @param appId Application ID. Used for the authentication (optional)
+   * @param appKey Application key. Used for the authentication (optional)
+   * @return String
+   * @throws ApiException if fails to make API call
+   */
+  public String streamSessionImages(String key, Boolean render, String sortBy, String limitBy, Double startLimit, Double endLimit, String order, String appId, String appKey) throws ApiException {
+    Object localVarPostBody = null;
+    
+    // verify the required parameter 'key' is set
+    if (key == null) {
+      throw new ApiException(400, "Missing the required parameter 'key' when calling streamSessionImages");
+    }
+    
+    // create path and map variables
+    String localVarPath = "/stream/session/images".replaceAll("\\{format\\}","json");
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "key", key));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "render", render));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "sortBy", sortBy));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "limitBy", limitBy));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "startLimit", startLimit));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "endLimit", endLimit));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "order", order));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "appId", appId));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "appKey", appKey));
+
+    
+    
+    final String[] localVarAccepts = {
+      "application/zip"
     };
     final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
 
@@ -573,5 +703,63 @@ public class StreamApi {
 
     GenericType<Key> localVarReturnType = new GenericType<Key>() {};
     return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+      }
+  /**
+   * Render a video from the images linked to a session
+   * Get a video of the rendered images sent using the session.
+   * @param key key to store the processed images in the database. Please use a key generated by the API. (required)
+   * @param fps Number of fps of the video. (Default is 30) (optional)
+   * @param sortBy This parameter defines how you want to sort the images in the session. Default is timestamp. (optional)
+   * @param limitBy This parameter defines the parameters the API will use to limit the data. Default is timestamp. (optional)
+   * @param startLimit Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) (optional)
+   * @param endLimit Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) (optional)
+   * @param order This parameters defines the order, ascending or descending. Default is ascending (optional)
+   * @param appId Application ID. Used for the authentication (optional)
+   * @param appKey Application key. Used for the authentication (optional)
+   * @return String
+   * @throws ApiException if fails to make API call
+   */
+  public String streamSessionVideo(String key, Integer fps, String sortBy, String limitBy, Double startLimit, Double endLimit, String order, String appId, String appKey) throws ApiException {
+    Object localVarPostBody = null;
+    
+    // verify the required parameter 'key' is set
+    if (key == null) {
+      throw new ApiException(400, "Missing the required parameter 'key' when calling streamSessionVideo");
+    }
+    
+    // create path and map variables
+    String localVarPath = "/stream/session/video".replaceAll("\\{format\\}","json");
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "key", key));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "fps", fps));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "sortBy", sortBy));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "limitBy", limitBy));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "startLimit", startLimit));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "endLimit", endLimit));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "order", order));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "appId", appId));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "appKey", appKey));
+
+    
+    
+    final String[] localVarAccepts = {
+      "video/mp4"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] {  };
+
+    GenericType<String> localVarReturnType = new GenericType<String>() {};
+    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
 }

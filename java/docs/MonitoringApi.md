@@ -1,6 +1,6 @@
 # MonitoringApi
 
-All URIs are relative to *http://127.0.0.1:8080/nviso/api/v2*
+All URIs are relative to *http://192.168.10.158:8080/nviso/api/v2*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

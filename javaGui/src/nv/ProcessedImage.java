@@ -25,6 +25,7 @@ public class ProcessedImage extends Observable{
     private ArrayList<ProcessedFace> faces = new ArrayList<>();
     private String processingStatusCode = "";
     private String processingStatusMessage = "";
+    private JSONObject json;
     
     private State state = State.NotProcessed;
     
@@ -73,15 +74,33 @@ public class ProcessedImage extends Observable{
         state = State.Processed;
         changed();
     }
-    
+
     synchronized public State getState() {
         return state;
+    }
+    
+    public JSONObject getJson() {
+    	return json;
     }
     
     public void changed()
     {
         setChanged();
         notifyObservers();
+    }
+    
+    public String getStatus() {
+    	if (state == State.Processed) {
+            if (processingStatusCode.equals("success")){
+                return "Processing OK";
+            } else {
+                return "Processing failed : "+processingStatusMessage;
+            }
+        } else if (state == State.Processing) {
+            return "Processing ...";
+        } else {
+            return "Not processed";
+        }
     }
     
     @Override
@@ -102,49 +121,52 @@ public class ProcessedImage extends Observable{
         return res;
     }
     
-    synchronized public void fromJSON(JSONObject json) throws JSONException {
-        /*// Reset
-        faces.clear();
-        processingStatusCode = "";
-        processingStatusMessage = "";
-        
-        // Check the error
-        JSONObject status = json.getJSONObject("status");
-        processingStatusCode = status.getString("code");
-        processingStatusMessage = status.getString("message");
-        
-        if (processingStatusCode.equals("success")) {
-            // Get all faces
-            JSONArray images = json.getJSONArray("images");
-            if (images.length() != 1) {
-                throw new JSONException("Image count should be one");
-            }
-            JSONObject image = images.getJSONObject(0);
-            JSONObject imageStatus = image.getJSONObject("status");
-            processingStatusCode = imageStatus.getString("code");
-            processingStatusMessage = imageStatus.getString("message");
-            if (processingStatusCode.equals("success")) {
-                JSONArray jsonfaces = image.getJSONArray("faces");
-                for (int fi = 0; fi < jsonfaces.length(); fi++) {
-                    ProcessedFace pf = new ProcessedFace();
-                    pf.fromJSON(jsonfaces.getJSONObject(fi));
-                    faces.add(pf);
-                }
-            }
-        }
-        */
+    synchronized public void fromJSON(JSONObject json, String format) throws JSONException {
     	faces.clear();
-    	JSONArray images = json.getJSONArray("images");
-    	JSONObject image = images.getJSONObject(0);
-    	JSONArray jsonfaces = image.getJSONArray("faces");
-    	if (jsonfaces.length() != 0){
-    		processingStatusCode = "success";
-            for (int fi = 0; fi < jsonfaces.length(); fi++) {
-                ProcessedFace pf = new ProcessedFace();
-                pf.fromJSON(jsonfaces.getJSONObject(fi));
-                faces.add(pf);
-            }
+    	if (format == "v1-Compact"){
+	    	JSONArray images = json.getJSONArray("images");
+	    	JSONObject image = images.getJSONObject(0);
+	    	JSONArray jsonfaces = image.getJSONArray("faces");
+	    	if (jsonfaces.length() != 0){
+	    		processingStatusCode = "success";
+	            for (int fi = 0; fi < jsonfaces.length(); fi++) {
+	                ProcessedFace pf = new ProcessedFace();
+	                pf.fromJSON(jsonfaces.getJSONObject(fi), format);
+	                faces.add(pf);
+	            }
+	    	}
     	}
-    	
+    	else if(format == "v2-Full") {
+    		JSONArray jsonfaces = json.getJSONArray("FaceData");
+    		if(jsonfaces.length() != 0){
+    			processingStatusCode = "success";
+	    		for(int fi = 0; fi < jsonfaces.length(); ++fi) {
+	    			ProcessedFace pf = new ProcessedFace();
+	    			pf.fromJSON(jsonfaces.getJSONObject(fi), format);
+	    			faces.add(pf);
+	    		}
+    		}
+    	}
     }
+    
+    synchronized public void fromJSON(JSONObject json) throws JSONException {
+    	fromJSON(json, "v1-Compact");
+    }
+    
+    public Boolean sameDotsAs(ProcessedImage other) {
+    	if (faces.size() != other.getFaces().size())
+    		return false;
+    	Boolean same = true;
+    	for (int i = 0; i < faces.size(); ++i) {
+    		same = same && faces.get(i).sameDotsAs(other.getFaces().get(i));
+    		/*if (!faces.get(i).sameDotsAs(other.getFaces().get(i))) {
+    			System.out.println("Faces " + Integer.toString(i) + " are not the same.");
+    		}*/
+    	}
+    	return same;
+    }
+
+	public void setJSON(JSONObject json) {
+		this.json = json;
+	}
 }

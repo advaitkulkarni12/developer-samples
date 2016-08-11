@@ -5,7 +5,19 @@
 package nv;
 
 import com.csvreader.CsvWriter;
+import com.googlecode.javacv.FFmpegFrameGrabber;
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.nviso.nViso3DFIHttpClient;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
@@ -16,9 +28,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
+
+import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableModel;
+
+import org.jcodec.api.FrameGrab;
 
 /**
  *
@@ -26,10 +49,15 @@ import javax.swing.filechooser.FileFilter;
  */
 public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
 
+	private String[][] photoFiles = {};
     private ProcessedImageListModel processedImageListModel = new ProcessedImageListModel();
+    private ProcessedStream processedStream = new ProcessedStream();
+    private ProcessedVideoListModel processedVideoListModel = new ProcessedVideoListModel();
+    private ProcessedFileTableModel processedFileTableModel = null;
     private String initialAppId = "";
     private String initialAppKey = "";
     private ArrayList<ProcessedImage> processingList = new ArrayList<>();
+    private ArrayList<ProcessedVideo> processingVideosList = new ArrayList<>();
     private nViso3DFIHttpClient client = null;
     private int blockStarts = 0;
     private int blockCount = 0;
@@ -56,23 +84,60 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+    	logoPanel = new javax.swing.JPanel() {
+    		private Image image = null;
+    		
+    		@Override
+    	    protected void paintComponent(Graphics g) {
+    			super.paintComponent(g);
+    			try {
+					 if (image == null) image = ImageIO.read(new File("nviso_logo.png"));
+					g.drawImage(image, 0, 0, this);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    	};
+    	//logoPanel.setBackground(Color.white);
+    	logoPanel.setMinimumSize(new Dimension(500,100));
+    	logoPanel.setMaximumSize(new Dimension(500,100));
+    	
         applicationIdLabel = new javax.swing.JLabel();
         applicationKeyLabel = new javax.swing.JLabel();
         applicationIdText = new javax.swing.JTextField();
         applicationKeyText = new javax.swing.JTextField();
-        folderLabel = new javax.swing.JLabel();
-        folderPathLabel = new javax.swing.JLabel();
+        //folderLabel = new javax.swing.JLabel();
+        //folderPathLabel = new javax.swing.JLabel();
         selectFolderButtom = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        selectStreamFolderButton = new javax.swing.JButton();
+        selectVideoFolderButton = new javax.swing.JButton();
+        jTabbedPane = new javax.swing.JTabbedPane();
+        //jScrollPane1 = new javax.swing.JScrollPane();
+        
+        jPhotoTab = new javax.swing.JPanel();
+        processPhotoMultiFaces = new javax.swing.JCheckBox("Detect multiple faces : ");
+        processPhotoDistanceBox = new javax.swing.JComboBox();
+        processPhotoDistanceLabel = new javax.swing.JLabel("Face distance : ");
+        //processPhotoScrollPane = new javax.swing.JScrollPane();
+        //folderImagesTable = new javax.swing.JTable();
+        
+        jStreamScrollPane = new javax.swing.JScrollPane();
+        jVideoScrollPane = new javax.swing.JScrollPane();
+        
+        photoFileCounterLabel = new javax.swing.JLabel();
+        
         folderImagesList = new javax.swing.JList();
+        folderStreamList = new javax.swing.JList();
+        folderVideosList = new javax.swing.JList();
+        
         processAllButton = new javax.swing.JButton();
         saveToCsvButton = new javax.swing.JButton();
-        sessionIdLabel = new javax.swing.JLabel();
-        sessionIdText = new javax.swing.JTextField();
-        processedImagePanel = new nv.ProcessedImagePanel();
+        serverLabel = new javax.swing.JLabel();
+        serverText = new javax.swing.JTextField();
+        processedPhotoPanel = new nv.ProcessedImagePanel();
         processedEmotionPanel = new nv.ProcessedEmotionPanel();
         processingProgressBar = new javax.swing.JProgressBar();
-        processSelectedButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,12 +145,80 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
 
         applicationKeyLabel.setText("Application Key :");
 
-        folderLabel.setText("Folder :");
+        //folderLabel.setText("Folder :");
+        
+        processedPhotoPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+            	if (jTabbedPane.getSelectedIndex() == 2){ // Video
+            		processedPhotoPanel.increaseFrame();
+            		processedPhotoPanel.updateVideoFrame();
+	            	
+	            	processedEmotionPanel.setProcessedImage((ProcessedVideo)folderVideosList.getSelectedValue(), processedPhotoPanel.getJsonFrame());
+	            	
+	            	//processedImagePanel.setProcessedImage(processedVideo);
+	            	//folderVideosList.getSelectedValuesList().increaseFrame();
+	            	
+	            	/*this.setProcessedImage();
+	            	image =1;*/
+	            	//System.out.println("Click");
+            	}
+            }
+         });
+        
+        /*javax.swing.GroupLayout processedImagePanelLayout = new javax.swing.GroupLayout(processedImagePanel);
+        processedImagePanel.setLayout(processedImagePanelLayout);
+        processedImagePanelLayout.setHorizontalGroup(
+            processedImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        processedImagePanelLayout.setVerticalGroup(
+            processedImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );*/
+        
+        processedEmotionPanel.setBackground(new java.awt.Color(255, 255, 255));
+        
+        
+        JSplitPane processedPhotoFullPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, processedPhotoPanel, processedEmotionPanel);
+        processedPhotoFullPanel.setDividerLocation(200);//processedPhotoFullPanel.getDividerSize()/2);
+        /*
+        JPanel processedPhotoFullPanel = new JPanel();
+        processedPhotoFullPanel.setLayout(new BoxLayout(processedPhotoFullPanel, BoxLayout.Y_AXIS));
+        processedPhotoFullPanel.setBackground(Color.red);
+        processedPhotoFullPanel.add(processedPhotoPanel);
+        processedPhotoFullPanel.add(processedEmotionPanel);*/
+        
+        
+        /*javax.swing.GroupLayout processedEmotionPanelLayout = new javax.swing.GroupLayout(processedEmotionPanel);
+        processedEmotionPanel.setLayout(processedEmotionPanelLayout);
+        processedEmotionPanelLayout.setHorizontalGroup(
+            processedEmotionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        processedEmotionPanelLayout.setVerticalGroup(
+            processedEmotionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );*/
 
-        selectFolderButtom.setText("Select ...");
+        selectFolderButtom.setText("SELECT FOLDER");
         selectFolderButtom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectFolderButtomActionPerformed(evt);
+            }
+        });
+        
+        selectStreamFolderButton.setText("Select stream");
+        selectStreamFolderButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectStreamFolderButtonActionPerformed(evt);
+            }
+        });
+        
+        selectVideoFolderButton.setText("Select videos");
+        selectVideoFolderButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectVideoFolderButtonActionPerformed(evt);
             }
         });
 
@@ -95,56 +228,134 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
                 folderImagesListValueChanged(evt);
             }
         });
-        jScrollPane1.setViewportView(folderImagesList);
-
-        processAllButton.setText("(Re)process all");
+        
+        
+        
+        /*processPhotoDistanceBox.addItem("near");
+        processPhotoDistanceBox.addItem("medium");
+        processPhotoDistanceBox.addItem("far");
+        //processPhotoDistanceBox.setPreferredSize(new Dimension(100, 20));
+        processPhotoDistanceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        processPhotoDistanceLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JPanel photoDistance = new JPanel();
+        photoDistance.setLayout(new BoxLayout(photoDistance, BoxLayout.X_AXIS));
+        photoDistance.add(processPhotoDistanceLabel);
+        photoDistance.add(processPhotoDistanceBox);
+        processPhotoDistanceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        processPhotoDistanceLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        photoDistance.setAlignmentX(Component.LEFT_ALIGNMENT);
+        //photoDistance.setBackground(Color.white);
+        
+        processPhotoMultiFaces.setHorizontalTextPosition(SwingConstants.LEFT);
+        processPhotoMultiFaces.setAlignmentX(Component.LEFT_ALIGNMENT);
+        */
+        /*JPanel photoProcessConfiguration = new JPanel();
+        photoProcessConfiguration.setLayout(new BoxLayout(photoProcessConfiguration, BoxLayout.X_AXIS));
+        photoProcessConfiguration.add(processPhotoMultiFaces);
+        photoProcessConfiguration.add(photoDistance);
+        photoProcessConfiguration.setAlignmentX(Component.LEFT_ALIGNMENT);
+        */
+        
+        photoFileCounterLabel.setText("Files loaded : 0");
+        photoFileCounterLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        //jScrollPane1.setViewportView(folderImagesList);
+        inputPhotoPanel = new JPanel();
+        inputPhotoPanel.setLayout(new BoxLayout(inputPhotoPanel, BoxLayout.Y_AXIS));
+        inputPhotoPanel.add(photoFileCounterLabel);// BorderLayout.NORTH);
+        //inputPhotoPanel.add(selectFolderButtom); // BorderLayout.SOUTH);
+        //inputPhotoPanel.add(processPhotoMultiFaces);
+        //inputPhotoPanel.add(photoDistance);
+        //inputPhotoPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        //inputPhotoPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+        inputPhotoPanel.setMaximumSize(new Dimension(150,40));
+        //inputPhotoPanel.setSize(jScrollPane1.getWidth()/3, 20);
+        
+        /*processPhotoPanel = new JPanel();
+        processPhotoPanel.setName("Process");
+        processPhotoPanel.setSize(jScrollPane1.getWidth()/3, 20);
+        processPhotoPanel.setBackground(Color.white);
+        processPhotoPanel.setLayout(new BoxLayout(processPhotoPanel, BoxLayout.Y_AXIS));
+        processPhotoPanel.add(processPhotoMultiFaces);
+        processPhotoPanel.add(photoDistance);
+        processPhotoPanel.add(processAllButton);
+        processPhotoPanel.setSize(jScrollPane1.getWidth()/3, 20);
+        
+        exportPhotoPanel = new JPanel();
+        exportPhotoPanel.setName("Export");
+        exportPhotoPanel.setBackground(Color.white);
+        exportPhotoPanel.add(saveToCsvButton);
+        exportPhotoPanel.setSize(jScrollPane1.getWidth(), 20);*/
+        
+        
+        
+        
+        String title[] = {"Filename", "Status"};
+        processedFileTableModel = new ProcessedFileTableModel(title);
+        folderImagesTable = new javax.swing.JTable(processedFileTableModel);
+        photoScrollPane = new JScrollPane(folderImagesTable);
+        folderImagesTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent evt) {
+            	folderImagesTableValueSelected(evt);
+            }
+         });
+        
+        //JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, inputPhotoPanel, processPhotoPanel);
+        /*JPanel split = new JPanel();
+        split.setLayout(new BorderLayout(5,0)); //new BoxLayout(split, BoxLayout.X_AXIS));
+        split.add(inputPhotoPanel, BorderLayout.LINE_START);*/
+        //split.add(processPhotoPanel, BorderLayout.CENTER);
+        //split.add(exportPhotoPanel, BorderLayout.LINE_END);
+        jPhotoTab.setLayout(new BorderLayout());
+        //jScrollPane1.add(split, BorderLayout.NORTH);
+        //jScrollPane1.add(inputPhotoPanel, BorderLayout.NORTH);
+        jPhotoTab.add(photoScrollPane, BorderLayout.WEST);
+        jPhotoTab.add(processedPhotoFullPanel, BorderLayout.CENTER);
+        //jScrollPane1.add(processedEmotionPanel, BorderLayout.CENTER);
+        jPhotoTab.setVisible(true);
+        
+        //jScrollPane1.add(selectFolderButtom);
+        
+        folderStreamList.setModel(processedStream.getImages());
+        folderStreamList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                folderStreamListValueChanged(evt);
+            }
+        });
+        jStreamScrollPane.setViewportView(folderStreamList);
+        
+        folderVideosList.setModel(processedVideoListModel);
+        folderVideosList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                folderVideosListValueChanged(evt); // does nothing for now
+            }
+        });
+        jVideoScrollPane.setViewportView(folderVideosList);
+        
+        jTabbedPane.add("Photos", jPhotoTab);
+        jTabbedPane.add("Stream", jStreamScrollPane);
+        jTabbedPane.setEnabledAt(1, false);
+        jTabbedPane.add("Videos", jVideoScrollPane);
+        jTabbedPane.setEnabledAt(2, false);
+        
+        processAllButton.setText("PROCESS");
         processAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 processAllButtonActionPerformed(evt);
             }
         });
 
-        saveToCsvButton.setText("Save emotion profiles to CSV");
+        saveToCsvButton.setText("EXPORT");
         saveToCsvButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveToCsvButtonActionPerformed(evt);
             }
         });
 
-        sessionIdLabel.setText("Session ID");
+        serverLabel.setText("Server url : ");
 
-        sessionIdText.setText("0000111");
-
-        javax.swing.GroupLayout processedImagePanelLayout = new javax.swing.GroupLayout(processedImagePanel);
-        processedImagePanel.setLayout(processedImagePanelLayout);
-        processedImagePanelLayout.setHorizontalGroup(
-            processedImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        processedImagePanelLayout.setVerticalGroup(
-            processedImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        processedEmotionPanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout processedEmotionPanelLayout = new javax.swing.GroupLayout(processedEmotionPanel);
-        processedEmotionPanel.setLayout(processedEmotionPanelLayout);
-        processedEmotionPanelLayout.setHorizontalGroup(
-            processedEmotionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        processedEmotionPanelLayout.setVerticalGroup(
-            processedEmotionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        processSelectedButton.setText("(Re)process selected");
-        processSelectedButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                processSelectedButtonActionPerformed(evt);
-            }
-        });
+        serverText.setText("http://nviso-apiv2-api.nviso.net/nviso/api/v2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -153,6 +364,7 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logoPanel)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(applicationKeyLabel)
@@ -162,35 +374,52 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
                             .addComponent(applicationIdText)
                             .addComponent(applicationKeyText, javax.swing.GroupLayout.DEFAULT_SIZE, 875, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(sessionIdLabel)
+                        .addComponent(serverLabel)
                         .addGap(33, 33, 33)
-                        .addComponent(sessionIdText))
+                        .addComponent(serverText))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    	.addComponent(inputPhotoPanel)
+                    	.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(processingProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        //.addComponent(processAllButton)
                         .addComponent(processAllButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(processSelectedButton)
+                        //.addComponent(selectVideoFolderButton)
+                        .addComponent(saveToCsvButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saveToCsvButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        )//.addComponent(saveToCsvButton))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(folderLabel)
-                        .addGap(47, 47, 47)
-                        .addComponent(folderPathLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        //.addComponent(folderLabel)
+                        //.addGap(47, 47, 47)
+                        //.addComponent(folderPathLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(selectFolderButtom))
+                        .addComponent(selectFolderButtom)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        //.addComponent(selectStreamFolderButton)
+                        )
+                    /*.addGroup(layout.createSequentialGroup()
+                    		.addComponent(inputPhotoPanel))*/
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
+                        .addComponent(jTabbedPane)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(processedEmotionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(processedImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        /*.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            //.addComponent(processedEmotionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            //.addComponent(processedImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            )*/
+                        ))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                //.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(logoPanel)
+                        //)
+                //.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(applicationIdLabel)
                     .addComponent(applicationIdText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -200,29 +429,38 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
                     .addComponent(applicationKeyText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(sessionIdLabel)
-                    .addComponent(sessionIdText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(serverLabel)
+                    .addComponent(serverText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(selectFolderButtom)
-                    .addComponent(folderLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(folderPathLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    //.addComponent(selectStreamFolderButton)
+                    //.addComponent(selectVideoFolderButton)
+                    //.addComponent(folderLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                    //.addComponent(folderPathLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    )
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                /*.addGroup(layout.createSequentialGroup()
+                		.addComponent(inputPhotoPanel))*/
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(processedImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        //.addComponent(processedImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(processedEmotionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        //.addComponent(processedEmotionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        ))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(processAllButton)
-                    .addComponent(saveToCsvButton)
+                    //.addComponent(processAllButton)
+                    //.addComponent(saveToCsvButton)
+                	.addComponent(inputPhotoPanel)
                     .addComponent(processingProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(processSelectedButton))
+                    .addComponent(processAllButton)
+                    .addComponent(saveToCsvButton))
                 .addContainerGap())
         );
-
+        
+        componentsInNormalState();
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -240,7 +478,47 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
             processedImageListModel.clear();
             
             File folder = chooser.getSelectedFile();
-            this.folderPathLabel.setText(folder.toString());
+            //this.folderPathLabel.setText(folder.toString());
+      
+            // Populate the list with the folder content
+            File[] imagesFiles = folder.listFiles(new FilenameFilter() {
+
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png");
+                }
+                
+            });
+            photoFileCounterLabel.setText("Files loaded : "+ Integer.toString(imagesFiles.length));
+            
+            for (File f : imagesFiles) {
+                processedImageListModel.addProcessedImage(new ProcessedImage(f));
+                //String[] file = {f.getName(), "Not processed"};
+                ((ProcessedFileTableModel)folderImagesTable.getModel()).addProcessedImage(new ProcessedImage(f));
+            }
+        }
+        componentsInNormalState();
+    }//GEN-LAST:event_selectFolderButtomActionPerformed
+    
+    private void selectStreamFolderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectFolderButtomActionPerformed
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Choose an image directory");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            
+        	if (processedStream == null){
+            	processedStream = new ProcessedStream();
+            }
+            else {
+            	processedStream.clear();
+            }
+            
+            File folder = chooser.getSelectedFile();
+            //this.folderPathLabel.setText(folder.toString());
       
             // Populate the list with the folder content
             File[] imagesFiles = folder.listFiles(new FilenameFilter() {
@@ -253,11 +531,45 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
             });
             
             for (File f : imagesFiles) {
-                processedImageListModel.addProcessedImage(new ProcessedImage(f));
+                processedStream.addProcessedImage(new ProcessedImage(f));
             }
         }
+        componentsInNormalState();
     }//GEN-LAST:event_selectFolderButtomActionPerformed
+    
+    private void selectVideoFolderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectFolderButtomActionPerformed
 
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Choose an image directory");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            
+            // Clear the list
+            processedVideoListModel.clear();
+            
+            File folder = chooser.getSelectedFile();
+            //this.folderPathLabel.setText(folder.toString());
+      
+            // Populate the list with the folder content
+            File[] videosFiles = folder.listFiles(new FilenameFilter() {
+
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".mp4");
+                }
+                
+            });
+            
+            for (File f : videosFiles) {
+                processedVideoListModel.addProcessedVideo(new ProcessedVideo(f));
+            }
+        }
+        componentsInNormalState();
+    }//GEN-LAST:event_selectFolderButtomActionPerformed
+    
     private void initBlocks() {
         blockStarts = 0;
         blockCount = Math.min(10, processingList.size());
@@ -267,8 +579,15 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
     private void processNextBlock() {
         for (int i = blockStarts; i < blockStarts+blockCount; i++) {
             ProcessedImage current = processingList.get(i);
+            int index = i;
             // Call the API
-            client.processEmotionImageByUpload(
+            Thread t = new Thread() {
+            	public void run(){
+            		client.processEmotionImageByUpload(current);
+            	}
+            };
+            t.start();
+            /*client.processEmotionImageByUpload(
                     current.getImagePath(), 
                     sessionIdText.getText(), 
                     "["+(i)+"]",
@@ -276,8 +595,10 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
                     null,//"batch",
                     "1",
                     "json", 
-                    new ProcessedImageMashapeCallback(current));
-            
+                    new ProcessedImageMashapeCallback(current),
+                    (String) processPhotoDistanceBox.getSelectedItem(),
+                    processPhotoMultiFaces.isSelected());
+            */
         }
     }
     
@@ -315,12 +636,109 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
         
     }
     
-    private void processAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processAllButtonActionPerformed
-        processingList.clear();
-        for (int i = 0; i < processedImageListModel.getSize(); i++) {
-            processingList.add(processedImageListModel.getElementAt(i));
+    private void processSelectedStream() {
+        /*if (processingList.size() <= 0) {
+            return;
+        }*/
+        // Disable ui component
+        componentsInProcessingState();
+        
+        // Init the client
+        client = new nViso3DFIHttpClient(
+            applicationIdText.getText(),
+            applicationKeyText.getText());
+        
+        // Set up the progress bar
+        processingProgressBar.setMinimum(0);
+        processingProgressBar.setMaximum(processedStream.getImages().getSize());
+        processingProgressBar.setValue(0);
+        
+        // Register this as observer of all images
+        processedCount = 0;
+        for (int i=0; i < processedStream.getImages().getSize(); ++i) //ProcessedImage current : processingList)
+        {
+            ProcessedImage current = processedStream.getImages().getElementAt(i);
+            current.addObserver(this);
+            current.setProcessing();
         }
-        processSelectedList();
+        
+        client.processEmotionStreamByUpload(
+                processedStream);
+    }
+    
+    private void processSelectedVideos() {
+    	
+        if (processingVideosList.size() <= 0) {
+            return;
+        }
+        // Disable ui component
+        componentsInProcessingState();
+        
+        // Init the client
+        client = new nViso3DFIHttpClient(
+            applicationIdText.getText(),
+            applicationKeyText.getText());
+        
+        // Set up the progress bar
+        processingProgressBar.setMinimum(0);
+        processingProgressBar.setMaximum(processingVideosList.size());
+        processingProgressBar.setValue(0);
+        
+        // Register this as observer of all images
+        processedCount = 0;
+        for (ProcessedVideo current : processingVideosList)
+        {
+            current.addObserver(this);
+            current.setProcessing();
+        }
+        
+        for (ProcessedVideo current : processingVideosList) {
+        	client.processEmotionVideoByUpload(current);
+        }
+        
+        /*client.processEmotionVideoByUpload(
+                processedStream);
+        for (int i = blockStarts; i < blockStarts+blockCount; i++) {
+            ProcessedImage current = processingList.get(i);
+            // Call the API
+            client.processEmotionImageByUpload(
+                    current.getImagePath(), 
+                    sessionIdText.getText(), 
+                    "["+(i)+"]",
+                    null,
+                    null,//"batch",
+                    "1",
+                    "json", 
+                    new ProcessedImageMashapeCallback(current));
+            
+        }*/
+    }
+    
+    private void processAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processAllButtonActionPerformed
+    	if (jTabbedPane.getSelectedIndex() == 0){ // Photos
+	        processingList.clear();
+	        /*for (int i = 0; i < processedImageListModel.getSize(); i++) {
+	            processingList.add(processedImageListModel.getElementAt(i));
+	        }*/
+	        for (int i = 0; i < processedFileTableModel.getRowCount(); i++) {
+	            processingList.add(processedFileTableModel.getImageAt(i));
+	        }
+	        processSelectedList();
+    	}
+    	else if (jTabbedPane.getSelectedIndex() == 1){ // Stream
+	        /*processingList.clear();
+	        for (int i = 0; i < processedStream.getImages().getSize(); i++) {
+	            processingList.add(processedStream.getImages().getElementAt(i));
+	        }*/
+	        processSelectedStream();
+    	}
+    	else if (jTabbedPane.getSelectedIndex() == 2){ // Video
+    		processingVideosList.clear();
+    		for (int i = 0; i < processedVideoListModel.getSize(); i++) {
+	            processingVideosList.add(processedVideoListModel.getElementAt(i));
+	        }
+    		processSelectedVideos();
+    	}
     }//GEN-LAST:event_processAllButtonActionPerformed
 
     private void saveToCsvButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveToCsvButtonActionPerformed
@@ -369,14 +787,14 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
                         csvWriter.endRecord();
                     }
                     // Write value for each image
-                    for (int i = 0; i < processedImageListModel.getSize(); i++)
+                    for (int i = 0; i < processedFileTableModel.getRowCount(); i++)
                     {
-                        ProcessedImage current = processedImageListModel.getElementAt(i);
+                        ProcessedImage current = processedFileTableModel.getImageAt(i);
                         if (current.getState() == ProcessedImage.State.Processed)
                         {
                             csvWriter.write(current.getImagePath().getName());
                             csvWriter.write(dateFormat.format(date));
-                            csvWriter.write(sessionIdText.getText());
+                            //csvWriter.write(sessionIdText.getText());
                             csvWriter.write(Integer.toString(i));
                             // Face no face
                             if (current.getFaces().size() > 0) {
@@ -407,56 +825,108 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
             }
         }
     }//GEN-LAST:event_saveToCsvButtonActionPerformed
+    
+    private void folderImagesTableValueSelected(java.awt.event.MouseEvent evt) {
+    	//String filename = (String) folderImagesTable.getValueAt(folderImagesTable.getSelectedRow(), 0);
+    	processedPhotoPanel.setProcessedImage(processedFileTableModel.getImageAt(folderImagesTable.getSelectedRow()));
+        processedEmotionPanel.setProcessedImage(processedFileTableModel.getImageAt(folderImagesTable.getSelectedRow()));
+    }
 
     private void folderImagesListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_folderImagesListValueChanged
-        processedImagePanel.setProcessedImage((ProcessedImage)folderImagesList.getSelectedValue());
+    	processedPhotoPanel.setProcessedImage((ProcessedImage)folderImagesList.getSelectedValue());
         processedEmotionPanel.setProcessedImage((ProcessedImage)folderImagesList.getSelectedValue());
     }//GEN-LAST:event_folderImagesListValueChanged
+    
+    private void folderStreamListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_folderImagesListValueChanged
+    	processedPhotoPanel.setProcessedImage((ProcessedImage)folderStreamList.getSelectedValue());
+        processedEmotionPanel.setProcessedImage((ProcessedImage)folderStreamList.getSelectedValue());
+    }//GEN-LAST:event_folderImagesListValueChanged
+    
+    private void folderVideosListValueChanged(javax.swing.event.ListSelectionEvent evt) {
+    	processedPhotoPanel.setProcessedImage((ProcessedVideo)folderVideosList.getSelectedValue());//, 0);
+    	processedEmotionPanel.setProcessedImage((ProcessedVideo)folderVideosList.getSelectedValue(), 0);
+    }
 
-    private void processSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processSelectedButtonActionPerformed
-        processingList.clear();
-        processingList.addAll(folderImagesList.getSelectedValuesList());
-        processSelectedList();
+    /*private void processSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processSelectedButtonActionPerformed
+    	if (jTabbedPane.getSelectedIndex() == 0) { // Photos
+	        processingList.clear();
+	        processingList.addAll(folderImagesList.getSelectedValuesList());
+	        processSelectedList();
+    	}
+    	else if (jTabbedPane.getSelectedIndex() == 2) { // Videos
+    		processingVideosList.clear();
+	        processingVideosList.addAll(folderVideosList.getSelectedValuesList());
+	        processSelectedVideos();
+    	}
+        
     }//GEN-LAST:event_processSelectedButtonActionPerformed
-
+*/
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel applicationIdLabel;
     private javax.swing.JTextField applicationIdText;
     private javax.swing.JLabel applicationKeyLabel;
     private javax.swing.JTextField applicationKeyText;
     private javax.swing.JList folderImagesList;
-    private javax.swing.JLabel folderLabel;
-    private javax.swing.JLabel folderPathLabel;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable folderImagesTable;
+    private javax.swing.JList folderStreamList;
+    private javax.swing.JList folderVideosList;
+    
+    //private javax.swing.JLabel folderLabel;
+    //private javax.swing.JLabel folderPathLabel;
+    
+    private javax.swing.JPanel logoPanel;
+    private javax.swing.JTabbedPane jTabbedPane;
+    private javax.swing.JPanel jPhotoTab;
+    private javax.swing.JPanel inputPhotoPanel;
+    private javax.swing.JLabel photoFileCounterLabel;
+    private javax.swing.JPanel processPhotoPanel;
+    private javax.swing.JCheckBox processPhotoMultiFaces;
+    private javax.swing.JComboBox processPhotoDistanceBox;
+    private javax.swing.JLabel processPhotoDistanceLabel;
+    private javax.swing.JScrollPane photoScrollPane;
+    
+    private javax.swing.JPanel exportPhotoPanel;
+    
+    private javax.swing.JScrollPane jStreamScrollPane;
+    private javax.swing.JScrollPane jVideoScrollPane;
+    
+    
     private javax.swing.JButton processAllButton;
-    private javax.swing.JButton processSelectedButton;
     private nv.ProcessedEmotionPanel processedEmotionPanel;
-    private nv.ProcessedImagePanel processedImagePanel;
+    private nv.ProcessedImagePanel processedPhotoPanel;
     private javax.swing.JProgressBar processingProgressBar;
     private javax.swing.JButton saveToCsvButton;
     private javax.swing.JButton selectFolderButtom;
-    private javax.swing.JLabel sessionIdLabel;
-    private javax.swing.JTextField sessionIdText;
+    private javax.swing.JButton selectStreamFolderButton;
+    private javax.swing.JButton selectVideoFolderButton;
+    private javax.swing.JLabel serverLabel;
+    private javax.swing.JTextField serverText;
+    private javax.swing.JSplitPane photoSplit;
+    
     // End of variables declaration//GEN-END:variables
 
     private void componentsInProcessingState() {
         applicationIdText.setEnabled(false);
         applicationKeyText.setEnabled(false);
-        sessionIdText.setEnabled(false);
+        serverText.setEnabled(false);
         selectFolderButtom.setEnabled(false);
         saveToCsvButton.setEnabled(false);
         processAllButton.setEnabled(false);
-        processSelectedButton.setEnabled(false);
+        selectVideoFolderButton.setEnabled(false);
+        selectStreamFolderButton.setEnabled(false);
     }
     
     private void componentsInNormalState() {
         applicationIdText.setEnabled(true);
         applicationKeyText.setEnabled(true);
-        sessionIdText.setEnabled(true);
+        serverText.setEnabled(true);
         selectFolderButtom.setEnabled(true);
-        saveToCsvButton.setEnabled(true);
-        processAllButton.setEnabled(true);
-        processSelectedButton.setEnabled(true);
+        if (folderImagesTable.getRowCount() != 0) saveToCsvButton.setEnabled(true);
+        else saveToCsvButton.setEnabled(false);
+        if (folderImagesTable.getRowCount() != 0) processAllButton.setEnabled(true);
+        else processAllButton.setEnabled(false);
+        selectVideoFolderButton.setEnabled(true);
+        selectStreamFolderButton.setEnabled(true);
     }
     
     @Override
@@ -464,35 +934,70 @@ public class NVisoGuiMainFrame extends javax.swing.JFrame implements Observer {
         // Some items in the list are updated ... update the progress
         
         synchronized(this) {
-            //int processedCount = 0;
-            //for (ProcessedImage current : processingList) {
-                //ProcessedImage current = processedImageListModel.getElementAt(i);
-                ProcessedImage current = (ProcessedImage)o;
-                if (current.getState() == ProcessedImage.State.Processed) {
-                    processedCount += 1;
-                    currentInBlockProcessed += 1;
-                }
-            //}
-            processingProgressBar.setValue(processedCount);
-            // If block finished
-            if (currentInBlockProcessed == blockCount) {
-                currentInBlockProcessed = 0;
-                blockStarts = blockStarts+blockCount;
-                blockCount = Math.min(10, processingList.size()-blockStarts);
-                if (blockCount > 0) {
-                    processNextBlock();
-                }
-            }
-            // If processing finished
-            if (processedCount == processingList.size()) {
-                for (ProcessedImage cimg : processingList) {
-                    //ProcessedImage current = processedImageListModel.getElementAt(i);
-                    cimg.deleteObserver(this);
-                }
-                processedCount = 0;
-                currentInBlockProcessed = -1;
-                componentsInNormalState();
-            }
+        	if(o.getClass().equals(ProcessedImage.class)) {
+	            //int processedCount = 0;
+	            //for (ProcessedImage current : processingList) {
+	                //ProcessedImage current = processedImageListModel.getElementAt(i);
+	                ProcessedImage current = (ProcessedImage)o;
+	                if (current.getState() == ProcessedImage.State.Processed) {
+	                    processedCount += 1;
+	                    currentInBlockProcessed += 1;
+	                }
+	            //}
+	            processingProgressBar.setValue(processedCount);
+	            processingProgressBar.repaint();
+	            // If block finished
+	            if (currentInBlockProcessed == blockCount) {
+	                currentInBlockProcessed = 0;
+	                blockStarts = blockStarts+blockCount;
+	                blockCount = Math.min(10, processingList.size()-blockStarts);
+	                if (blockCount > 0) {
+	                    processNextBlock();
+	                }
+	            }
+	            // If processing finished
+	            if (processedCount == processingList.size()) {
+	                for (ProcessedImage cimg : processingList) {
+	                    //ProcessedImage current = processedImageListModel.getElementAt(i);
+	                    cimg.deleteObserver(this);
+	                }
+	                processedCount = 0;
+	                currentInBlockProcessed = -1;
+	                componentsInNormalState();
+	            }
+	        }
+        	
+        	else if(o.getClass().equals(ProcessedVideo.class)) {
+	            //int processedCount = 0;
+	            //for (ProcessedImage current : processingList) {
+	                //ProcessedImage current = processedImageListModel.getElementAt(i);
+	                ProcessedVideo current = (ProcessedVideo)o;
+	                if (current.getState() == ProcessedVideo.State.Processed) {
+	                    processedCount += 1;
+	                    currentInBlockProcessed += 1;
+	                }
+	            //}
+	            processingProgressBar.setValue(processedCount);
+	            // If block finished
+	            /*if (currentInBlockProcessed == blockCount) {
+	                currentInBlockProcessed = 0;
+	                blockStarts = blockStarts+blockCount;
+	                blockCount = Math.min(10, processingList.size()-blockStarts);
+	                if (blockCount > 0) {
+	                    processNextBlock();
+	                }
+	            }*/
+	            // If processing finished
+	            if (processedCount == processingVideosList.size()) {
+	                for (ProcessedVideo cvideo : processingVideosList) {
+	                    //ProcessedImage current = processedImageListModel.getElementAt(i);
+	                    cvideo.deleteObserver(this);
+	                }
+	                processedCount = 0;
+	                currentInBlockProcessed = -1;
+	                componentsInNormalState();
+	            }
+	        }
         }
     }
     

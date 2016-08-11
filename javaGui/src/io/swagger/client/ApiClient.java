@@ -41,10 +41,10 @@ import io.swagger.client.auth.HttpBasicAuth;
 import io.swagger.client.auth.ApiKeyAuth;
 import io.swagger.client.auth.OAuth;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-07-06T18:20:08.762+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-08-02T10:34:05.963+02:00")
 public class ApiClient {
   private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
-  private String basePath = "http://nviso-apiv2-api.nviso.net:8080/nviso/api/v2";
+  private String basePath = "http://nviso-apiv2-api.nviso.net/nviso/api/v2";
   private boolean debugging = false;
   private int connectionTimeout = 0;
 

@@ -112,34 +112,84 @@ public class ProcessedFace {
         return points;
     }
     
-    public void fromJSON(JSONObject json) throws JSONException {
+    public void fromJSON(JSONObject json, String format) throws JSONException {
         // Load the emotion profile
-        JSONObject attribute = json.getJSONObject("attribute");
-        JSONObject emotion = attribute.getJSONObject("emotion");
-        emotionProfile.put(EMOTION_NEUTRAL, emotion.getDouble(EMOTION_NEUTRAL));
-        emotionProfile.put(EMOTION_SADNESS, emotion.getDouble(EMOTION_SADNESS));
-        emotionProfile.put(EMOTION_DISGUST, emotion.getDouble(EMOTION_DISGUST));
-        emotionProfile.put(EMOTION_ANGER, emotion.getDouble(EMOTION_ANGER));
-        emotionProfile.put(EMOTION_SURPRISE, emotion.getDouble(EMOTION_SURPRISE));
-        emotionProfile.put(EMOTION_FEAR, emotion.getDouble(EMOTION_FEAR));
-        emotionProfile.put(EMOTION_HAPPINESS, emotion.getDouble(EMOTION_HAPPINESS));
-        // load the face rect
-        width = json.getDouble("width");
-        height = json.getDouble("height");
-        JSONObject centerjson = json.getJSONObject("center");
-        centerX = centerjson.getDouble("x");
-        centerY = centerjson.getDouble("y");
-        // Load points
-        points.clear();
-        for (int gi = 0; gi < ALL_POINT_GROUPS.length; gi++) {
-            JSONObject groupjson = json.getJSONObject(ALL_POINT_GROUPS[gi]);
-            int count = ALL_POINT_COUNT[gi];
-            for (int pi = 1; pi <= count; pi++) {
-                Double[] point = new Double[2];
-                point[0] = groupjson.getDouble("x"+Integer.toString(pi));
-                point[1] = groupjson.getDouble("y"+Integer.toString(pi));
-                points.add(point);
-            }
-        }
+    	if(format == "v1-Compact") {
+	        JSONObject attribute = json.getJSONObject("attribute");
+	        JSONObject emotion = attribute.getJSONObject("emotion");
+	        emotionProfile.put(EMOTION_NEUTRAL, emotion.getDouble(EMOTION_NEUTRAL));
+	        emotionProfile.put(EMOTION_SADNESS, emotion.getDouble(EMOTION_SADNESS));
+	        emotionProfile.put(EMOTION_DISGUST, emotion.getDouble(EMOTION_DISGUST));
+	        emotionProfile.put(EMOTION_ANGER, emotion.getDouble(EMOTION_ANGER));
+	        emotionProfile.put(EMOTION_SURPRISE, emotion.getDouble(EMOTION_SURPRISE));
+	        emotionProfile.put(EMOTION_FEAR, emotion.getDouble(EMOTION_FEAR));
+	        emotionProfile.put(EMOTION_HAPPINESS, emotion.getDouble(EMOTION_HAPPINESS));
+	        // load the face rect
+	        width = json.getDouble("width");
+	        height = json.getDouble("height");
+	        JSONObject centerjson = json.getJSONObject("center");
+	        centerX = centerjson.getDouble("x");
+	        centerY = centerjson.getDouble("y");
+	        // Load points
+	        points.clear();
+	        for (int gi = 0; gi < ALL_POINT_GROUPS.length; gi++) {
+	            JSONObject groupjson = json.getJSONObject(ALL_POINT_GROUPS[gi]);
+	            int count = ALL_POINT_COUNT[gi];
+	            for (int pi = 1; pi <= count; pi++) {
+	                Double[] point = new Double[2];
+	                point[0] = groupjson.getDouble("x"+Integer.toString(pi));
+	                point[1] = groupjson.getDouble("y"+Integer.toString(pi));
+	                points.add(point);
+	            }
+	        }
+    	}
+    	else if (format == "v2-Full") {
+    		JSONObject emotion = json.getJSONObject("Emotion");
+    		emotionProfile.put(EMOTION_NEUTRAL, emotion.getJSONObject("Neutral").getJSONObject("Intensity").getDouble("Value"));
+	        emotionProfile.put(EMOTION_SADNESS, emotion.getJSONObject("Sadness").getJSONObject("Intensity").getDouble("Value"));
+	        emotionProfile.put(EMOTION_DISGUST, emotion.getJSONObject("Disgust").getJSONObject("Intensity").getDouble("Value"));
+	        emotionProfile.put(EMOTION_ANGER, emotion.getJSONObject("Anger").getJSONObject("Intensity").getDouble("Value"));
+	        emotionProfile.put(EMOTION_SURPRISE, emotion.getJSONObject("Surprise").getJSONObject("Intensity").getDouble("Value"));
+	        emotionProfile.put(EMOTION_FEAR, emotion.getJSONObject("Fear").getJSONObject("Intensity").getDouble("Value"));
+	        emotionProfile.put(EMOTION_HAPPINESS, emotion.getJSONObject("Happiness").getJSONObject("Intensity").getDouble("Value"));
+	        
+	        width = json.getJSONObject("Location").getDouble("Width");
+	        height = json.getJSONObject("Location").getDouble("Height");
+	        centerX = json.getJSONObject("Location").getDouble("X");
+	        centerY = json.getJSONObject("Location").getDouble("Y");
+	        
+	        points.clear();
+	        JSONObject groupjson = json.getJSONObject("Landmark170");
+	        for (int gi = 0; gi < 170; ++gi) {
+	        	Double[] point = new Double[2];
+	        	String n;
+	        	if (gi < 10) n = "00" + Integer.toString(gi);
+	        	else if(gi >= 10 && gi < 100) n = "0" + Integer.toString(gi);
+	        	else n = Integer.toString(gi);
+	        	point[0] = groupjson.getJSONObject("Pt_" + n).getDouble("X");
+	        	point[1] = groupjson.getJSONObject("Pt_" + n).getDouble("Y");
+	        	points.add(point);
+	        }
+	        // should add the points in this format ...
+    	}
     }
+    
+    public void fromJSON(JSONObject json) throws JSONException {
+    	fromJSON(json, "v1-Compact");
+    }
+
+	public boolean sameDotsAs(ProcessedFace processedFace) {
+		//return points.equals(processedFace.getPoints());
+		Boolean same = true;
+		for (int i = 0; i < points.size(); ++i) {
+			same = same && (points.get(i)[0].equals(processedFace.getPoints().get(i)[0])) && (points.get(i)[1].equals(processedFace.getPoints().get(i)[1]));
+			/*if (!(points.get(i)[0].equals(processedFace.getPoints().get(i)[0]))){
+				System.out.println(points.get(i)[0] + "!=" + processedFace.getPoints().get(i)[0]);
+			}
+			if (!(points.get(i)[1].equals(processedFace.getPoints().get(i)[1]))){
+				System.out.println(points.get(i)[1] + "!=" + processedFace.getPoints().get(i)[1]);
+			}*/
+		}
+		return same;
+	}
 }

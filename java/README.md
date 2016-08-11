@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Building the API client library requires [Maven](https://maven.apache.org/) version 2.2.0 to be installed.
+Building the API client library requires [Maven](https://maven.apache.org/) to be installed.
 
 ## Installation
 
@@ -64,10 +64,12 @@ This will run all the tests, which are located in src\test\java\io\swagger\clien
 - photoProcessUploadTest in PhotoApiTest.java which processes a .jpg photo using photoProcessUpload method. The program then extract all emotion intensities from the json and prints the emotion with the highest intensity.
 - streamProcessUploadTest in StreamApiTest.java which starts a session and processes a stream of .jpg photos using streamProcessUpload method. The program then ends the session, performs a query to get the result in json format and extract all emotion intensities for all images and prints each time the emotion with the highest intensity.
 - streamSessionDataTest in StreamApiTest.java which does the same as streamProcessUploadApiTest but just prints the resulting json object in csv format using streamSessionData method.
+- videoProcessUploadTest in VideoApiTest.java which upload and processes a video, and prints for each frame the emotions of each face present on the frame.
+
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://127.0.0.1:8080/nviso/api/v2*
+All URIs are relative to *http://192.168.10.158:8080/nviso/api/v2*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
@@ -83,10 +85,18 @@ Class | Method | HTTP request | Description
 *StreamApi* | [**streamProcessUrl**](docs/StreamApi.md#streamProcessUrl) | **GET** /stream/process/url | Process an image given its URL.
 *StreamApi* | [**streamSessionData**](docs/StreamApi.md#streamSessionData) | **GET** /stream/session/data | Query the results and get a CSV data format
 *StreamApi* | [**streamSessionEnd**](docs/StreamApi.md#streamSessionEnd) | **GET** /stream/session/end | End the session
+*StreamApi* | [**streamSessionExport**](docs/StreamApi.md#streamSessionExport) | **GET** /stream/session/export | Render the images and the JSON linked to a session
 *StreamApi* | [**streamSessionGraph**](docs/StreamApi.md#streamSessionGraph) | **GET** /stream/session/graph | Query the results and get a Graph format
+*StreamApi* | [**streamSessionImages**](docs/StreamApi.md#streamSessionImages) | **GET** /stream/session/images | Render the images linked to a session
 *StreamApi* | [**streamSessionList**](docs/StreamApi.md#streamSessionList) | **GET** /stream/session/list | Session information related to ID.
 *StreamApi* | [**streamSessionQuery**](docs/StreamApi.md#streamSessionQuery) | **GET** /stream/session/query | Query the results
 *StreamApi* | [**streamSessionStart**](docs/StreamApi.md#streamSessionStart) | **POST** /stream/session/start | Returns a key for the image endpoints.
+*StreamApi* | [**streamSessionVideo**](docs/StreamApi.md#streamSessionVideo) | **GET** /stream/session/video | Render a video from the images linked to a session
+*VideoApi* | [**videoProcessUpload**](docs/VideoApi.md#videoProcessUpload) | **POST** /video/process/upload | Process a video. Returns the JSON. Keeps Connection Alive.
+*VideoApi* | [**videoQueueResults**](docs/VideoApi.md#videoQueueResults) | **GET** /video/queue/results | Download the results.
+*VideoApi* | [**videoQueueStatus**](docs/VideoApi.md#videoQueueStatus) | **GET** /video/queue/status | Check the status of the processed video.
+*VideoApi* | [**videoQueueUpload**](docs/VideoApi.md#videoQueueUpload) | **POST** /video/queue/upload | Process a video. Email sent when finished.
+*VideoApi* | [**videoRenderUpload**](docs/VideoApi.md#videoRenderUpload) | **POST** /video/render/upload | Process a video. Returns the processed video. Keeps Connection Alive.
 
 
 ## Documentation for Models

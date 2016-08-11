@@ -29,6 +29,7 @@ import io.swagger.client.ApiException;
 import java.io.File;
 import io.swagger.client.model.Key;
 import org.junit.Test;
+
 // Package to play with JSON objects and arrays
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -105,7 +106,9 @@ public class StreamApiTest {
         Double xMax = 1.0;
         Double yMin = 0.0;
         Double yMax = 1.0;
-        String response = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+		Boolean enableFooter = true;
+		Boolean dimSecFaces = true;
+        String response = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
 
 		//System.out.println(response);
     }
@@ -149,7 +152,7 @@ public class StreamApiTest {
      */
     @Test
     public void streamSessionDataTest() throws ApiException {
-		System.out.println("\n");
+		/*System.out.println("\n");
 		System.out.println("Test of the Stream query in csv format :");
 		String id = "sessionId";
         String data = "{\"info\": \"Test for example\"}";
@@ -168,6 +171,8 @@ public class StreamApiTest {
         Double xMax = 1.0;
         Double yMin = 0.0;
         Double yMax = 1.0;
+		Boolean enableFooter = true;
+		Boolean dimSecFaces = true;
 
 		for(int i=0; i < 27; ++i){
 			String filename;
@@ -178,7 +183,7 @@ public class StreamApiTest {
 				filename = "src/test/java/io/swagger/client/api/data/dataStream/RID_105440_0" + Integer.toString(i) + ".jpg";
 			}
 			File file = new File(filename);
-			String response_i = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+			String response_i = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
 		}
 
 		api.streamSessionEnd(key, appId, appKey);
@@ -192,7 +197,7 @@ public class StreamApiTest {
         String order = "ascending";
         String response = api.streamSessionData(key, dataFormat, sortBy, limitBy, startLimit, endLimit, order, appId, appKey);
 
-		System.out.println(response);
+		System.out.println(response);*/
     }
     
     /**
@@ -265,7 +270,7 @@ public class StreamApiTest {
      */
     @Test
     public void streamSessionQueryTest() throws ApiException {
-		System.out.println("\n");
+		/*System.out.println("\n");
 		System.out.println("Test of the Stream query :");
         String id = "sessionId";
         String data = "{\"info\": \"Test for example\"}";
@@ -284,6 +289,8 @@ public class StreamApiTest {
         Double xMax = 1.0;
         Double yMin = 0.0;
         Double yMax = 1.0;
+		Boolean enableFooter = true;
+		Boolean dimSecFaces = true;
 
 		for(int i=0; i < 27; ++i){
 			String filename;
@@ -294,7 +301,7 @@ public class StreamApiTest {
 				filename = "src/test/java/io/swagger/client/api/data/dataStream/RID_105440_0" + Integer.toString(i) + ".jpg";
 			}
 			File file = new File(filename);
-			String response_i = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+			String response_i = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
 		}
 
 		api.streamSessionEnd(key, appId, appKey);
@@ -351,7 +358,7 @@ public class StreamApiTest {
 				System.out.println(".");
 			}
 		}
-
+		*/
     }
     
     /**

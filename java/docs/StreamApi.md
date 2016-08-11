@@ -1,6 +1,6 @@
 # StreamApi
 
-All URIs are relative to *http://127.0.0.1:8080/nviso/api/v2*
+All URIs are relative to *http://192.168.10.158:8080/nviso/api/v2*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -9,15 +9,18 @@ Method | HTTP request | Description
 [**streamProcessUrl**](StreamApi.md#streamProcessUrl) | **GET** /stream/process/url | Process an image given its URL.
 [**streamSessionData**](StreamApi.md#streamSessionData) | **GET** /stream/session/data | Query the results and get a CSV data format
 [**streamSessionEnd**](StreamApi.md#streamSessionEnd) | **GET** /stream/session/end | End the session
+[**streamSessionExport**](StreamApi.md#streamSessionExport) | **GET** /stream/session/export | Render the images and the JSON linked to a session
 [**streamSessionGraph**](StreamApi.md#streamSessionGraph) | **GET** /stream/session/graph | Query the results and get a Graph format
+[**streamSessionImages**](StreamApi.md#streamSessionImages) | **GET** /stream/session/images | Render the images linked to a session
 [**streamSessionList**](StreamApi.md#streamSessionList) | **GET** /stream/session/list | Session information related to ID.
 [**streamSessionQuery**](StreamApi.md#streamSessionQuery) | **GET** /stream/session/query | Query the results
 [**streamSessionStart**](StreamApi.md#streamSessionStart) | **POST** /stream/session/start | Returns a key for the image endpoints.
+[**streamSessionVideo**](StreamApi.md#streamSessionVideo) | **GET** /stream/session/video | Render a video from the images linked to a session
 
 
 <a name="streamProcessBase64"></a>
 # **streamProcessBase64**
-> String streamProcessBase64(base64, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey)
+> String streamProcessBase64(base64, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey)
 
 Process an image using a Base 64 encoded string
 
@@ -43,10 +46,12 @@ Double xMin = 3.4D; // Double | Minimum horizontal value for the region of inter
 Double xMax = 3.4D; // Double | Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0
 Double yMin = 3.4D; // Double | Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0
 Double yMax = 3.4D; // Double | Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0
+Boolean enableFooter = true; // Boolean | Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session)
+Boolean dimSecFaces = true; // Boolean | If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session)
 String appId = "appId_example"; // String | Application ID. Used for the authentication
 String appKey = "appKey_example"; // String | Application key. Used for the authentication
 try {
-    String result = apiInstance.streamProcessBase64(base64, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+    String result = apiInstance.streamProcessBase64(base64, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling StreamApi#streamProcessBase64");
@@ -70,6 +75,8 @@ Name | Type | Description  | Notes
  **xMax** | **Double**| Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 | [optional]
  **yMin** | **Double**| Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0 | [optional]
  **yMax** | **Double**| Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 | [optional]
+ **enableFooter** | **Boolean**| Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session) | [optional]
+ **dimSecFaces** | **Boolean**| If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session) | [optional]
  **appId** | **String**| Application ID. Used for the authentication | [optional]
  **appKey** | **String**| Application key. Used for the authentication | [optional]
 
@@ -88,7 +95,7 @@ No authorization required
 
 <a name="streamProcessUpload"></a>
 # **streamProcessUpload**
-> String streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey)
+> String streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey)
 
 Post a image to the API. JSON returned.
 
@@ -114,10 +121,12 @@ Double xMin = 3.4D; // Double | Minimum horizontal value for the region of inter
 Double xMax = 3.4D; // Double | Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0
 Double yMin = 3.4D; // Double | Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0
 Double yMax = 3.4D; // Double | Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0
+Boolean enableFooter = true; // Boolean | Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session)
+Boolean dimSecFaces = true; // Boolean | If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session)
 String appId = "appId_example"; // String | Application ID. Used for the authentication
 String appKey = "appKey_example"; // String | Application key. Used for the authentication
 try {
-    String result = apiInstance.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+    String result = apiInstance.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling StreamApi#streamProcessUpload");
@@ -141,6 +150,8 @@ Name | Type | Description  | Notes
  **xMax** | **Double**| Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 | [optional]
  **yMin** | **Double**| Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0 | [optional]
  **yMax** | **Double**| Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 | [optional]
+ **enableFooter** | **Boolean**| Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session) | [optional]
+ **dimSecFaces** | **Boolean**| If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session) | [optional]
  **appId** | **String**| Application ID. Used for the authentication | [optional]
  **appKey** | **String**| Application key. Used for the authentication | [optional]
 
@@ -159,7 +170,7 @@ No authorization required
 
 <a name="streamProcessUrl"></a>
 # **streamProcessUrl**
-> String streamProcessUrl(url, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey)
+> String streamProcessUrl(url, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey)
 
 Process an image given its URL.
 
@@ -185,10 +196,12 @@ Double xMin = 3.4D; // Double | Minimum horizontal value for the region of inter
 Double xMax = 3.4D; // Double | Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0
 Double yMin = 3.4D; // Double | Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0
 Double yMax = 3.4D; // Double | Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0
+Boolean enableFooter = true; // Boolean | Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session)
+Boolean dimSecFaces = true; // Boolean | If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session)
 String appId = "appId_example"; // String | Application ID. Used for the authentication
 String appKey = "appKey_example"; // String | Application key. Used for the authentication
 try {
-    String result = apiInstance.streamProcessUrl(url, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+    String result = apiInstance.streamProcessUrl(url, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling StreamApi#streamProcessUrl");
@@ -212,6 +225,8 @@ Name | Type | Description  | Notes
  **xMax** | **Double**| Maximum horizontal value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 | [optional]
  **yMin** | **Double**| Minimum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 0.0 | [optional]
  **yMax** | **Double**| Maximum vertical value for the region of interest. It should be between 0.0 and 1.0. Default is 1.0 | [optional]
+ **enableFooter** | **Boolean**| Enable the footer with more information on the emotions. Default value is true. (This value is used when rendering the session) | [optional]
+ **dimSecFaces** | **Boolean**| If set to true, it will dim all the secondary faces. Default value is true. (This value is used when rendering the session) | [optional]
  **appId** | **String**| Application ID. Used for the authentication | [optional]
  **appKey** | **String**| Application key. Used for the authentication | [optional]
 
@@ -338,6 +353,69 @@ No authorization required
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
+<a name="streamSessionExport"></a>
+# **streamSessionExport**
+> String streamSessionExport(key, render, queryFormat, sortBy, limitBy, startLimit, endLimit, order, appId, appKey)
+
+Render the images and the JSON linked to a session
+
+Return the images and the JSON linked to a session. The JSON correspond to the query endpoint. The images can be raw or rendered.
+
+### Example
+```java
+// Import classes:
+//import io.swagger.client.ApiException;
+//import io.swagger.client.api.StreamApi;
+
+
+StreamApi apiInstance = new StreamApi();
+String key = "key_example"; // String | key to store the processed images in the database. Please use a key generated by the API.
+Boolean render = true; // Boolean | If you want to render the images, set this parameter to true. If set to false, you will receive the raw images. (Default is false)
+String queryFormat = "queryFormat_example"; // String | Format of the JSON response. Default is v2-Full.
+String sortBy = "sortBy_example"; // String | This parameter defines how you want to sort the images in the session. Default is timestamp.
+String limitBy = "limitBy_example"; // String | This parameter defines the parameters the API will use to limit the data. Default is timestamp.
+Double startLimit = 3.4D; // Double | Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you're limiting by timestamp, put here a UNIX time)
+Double endLimit = 3.4D; // Double | Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you're limiting by timestamp, put here a UNIX time)
+String order = "order_example"; // String | This parameters defines the order, ascending or descending. Default is ascending
+String appId = "appId_example"; // String | Application ID. Used for the authentication
+String appKey = "appKey_example"; // String | Application key. Used for the authentication
+try {
+    String result = apiInstance.streamSessionExport(key, render, queryFormat, sortBy, limitBy, startLimit, endLimit, order, appId, appKey);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling StreamApi#streamSessionExport");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **key** | **String**| key to store the processed images in the database. Please use a key generated by the API. |
+ **render** | **Boolean**| If you want to render the images, set this parameter to true. If set to false, you will receive the raw images. (Default is false) | [optional]
+ **queryFormat** | **String**| Format of the JSON response. Default is v2-Full. | [optional] [enum: v1-Compact, v2-Full]
+ **sortBy** | **String**| This parameter defines how you want to sort the images in the session. Default is timestamp. | [optional] [enum: timestamp, time, score]
+ **limitBy** | **String**| This parameter defines the parameters the API will use to limit the data. Default is timestamp. | [optional] [enum: timestamp, time, score]
+ **startLimit** | **Double**| Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) | [optional]
+ **endLimit** | **Double**| Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) | [optional]
+ **order** | **String**| This parameters defines the order, ascending or descending. Default is ascending | [optional] [enum: ascending, descending]
+ **appId** | **String**| Application ID. Used for the authentication | [optional]
+ **appKey** | **String**| Application key. Used for the authentication | [optional]
+
+### Return type
+
+**String**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/zip
+
 <a name="streamSessionGraph"></a>
 # **streamSessionGraph**
 > String streamSessionGraph(key, graphFormat, sortBy, limitBy, startLimit, endLimit, order, appId, appKey)
@@ -398,6 +476,67 @@ No authorization required
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
+
+<a name="streamSessionImages"></a>
+# **streamSessionImages**
+> String streamSessionImages(key, render, sortBy, limitBy, startLimit, endLimit, order, appId, appKey)
+
+Render the images linked to a session
+
+Return the images stored with a given session. The images can be returned as raw or rendered (Emotion shown directly on the images). A zip folder is returned.
+
+### Example
+```java
+// Import classes:
+//import io.swagger.client.ApiException;
+//import io.swagger.client.api.StreamApi;
+
+
+StreamApi apiInstance = new StreamApi();
+String key = "key_example"; // String | key to store the processed images in the database. Please use a key generated by the API.
+Boolean render = true; // Boolean | If you want to render the images, set this parameter to true. If set to false, you will receive the raw images. (Default is false)
+String sortBy = "sortBy_example"; // String | This parameter defines how you want to sort the images in the session. Default is timestamp.
+String limitBy = "limitBy_example"; // String | This parameter defines the parameters the API will use to limit the data. Default is timestamp.
+Double startLimit = 3.4D; // Double | Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you're limiting by timestamp, put here a UNIX time)
+Double endLimit = 3.4D; // Double | Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you're limiting by timestamp, put here a UNIX time)
+String order = "order_example"; // String | This parameters defines the order, ascending or descending. Default is ascending
+String appId = "appId_example"; // String | Application ID. Used for the authentication
+String appKey = "appKey_example"; // String | Application key. Used for the authentication
+try {
+    String result = apiInstance.streamSessionImages(key, render, sortBy, limitBy, startLimit, endLimit, order, appId, appKey);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling StreamApi#streamSessionImages");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **key** | **String**| key to store the processed images in the database. Please use a key generated by the API. |
+ **render** | **Boolean**| If you want to render the images, set this parameter to true. If set to false, you will receive the raw images. (Default is false) | [optional]
+ **sortBy** | **String**| This parameter defines how you want to sort the images in the session. Default is timestamp. | [optional] [enum: timestamp, time, score]
+ **limitBy** | **String**| This parameter defines the parameters the API will use to limit the data. Default is timestamp. | [optional] [enum: timestamp, time, score]
+ **startLimit** | **Double**| Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) | [optional]
+ **endLimit** | **Double**| Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) | [optional]
+ **order** | **String**| This parameters defines the order, ascending or descending. Default is ascending | [optional] [enum: ascending, descending]
+ **appId** | **String**| Application ID. Used for the authentication | [optional]
+ **appKey** | **String**| Application key. Used for the authentication | [optional]
+
+### Return type
+
+**String**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/zip
 
 <a name="streamSessionList"></a>
 # **streamSessionList**
@@ -559,4 +698,65 @@ No authorization required
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
+
+<a name="streamSessionVideo"></a>
+# **streamSessionVideo**
+> String streamSessionVideo(key, fps, sortBy, limitBy, startLimit, endLimit, order, appId, appKey)
+
+Render a video from the images linked to a session
+
+Get a video of the rendered images sent using the session.
+
+### Example
+```java
+// Import classes:
+//import io.swagger.client.ApiException;
+//import io.swagger.client.api.StreamApi;
+
+
+StreamApi apiInstance = new StreamApi();
+String key = "key_example"; // String | key to store the processed images in the database. Please use a key generated by the API.
+Integer fps = 56; // Integer | Number of fps of the video. (Default is 30)
+String sortBy = "sortBy_example"; // String | This parameter defines how you want to sort the images in the session. Default is timestamp.
+String limitBy = "limitBy_example"; // String | This parameter defines the parameters the API will use to limit the data. Default is timestamp.
+Double startLimit = 3.4D; // Double | Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you're limiting by timestamp, put here a UNIX time)
+Double endLimit = 3.4D; // Double | Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you're limiting by timestamp, put here a UNIX time)
+String order = "order_example"; // String | This parameters defines the order, ascending or descending. Default is ascending
+String appId = "appId_example"; // String | Application ID. Used for the authentication
+String appKey = "appKey_example"; // String | Application key. Used for the authentication
+try {
+    String result = apiInstance.streamSessionVideo(key, fps, sortBy, limitBy, startLimit, endLimit, order, appId, appKey);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling StreamApi#streamSessionVideo");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **key** | **String**| key to store the processed images in the database. Please use a key generated by the API. |
+ **fps** | **Integer**| Number of fps of the video. (Default is 30) | [optional]
+ **sortBy** | **String**| This parameter defines how you want to sort the images in the session. Default is timestamp. | [optional] [enum: timestamp, time, score]
+ **limitBy** | **String**| This parameter defines the parameters the API will use to limit the data. Default is timestamp. | [optional] [enum: timestamp, time, score]
+ **startLimit** | **Double**| Starting limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) | [optional]
+ **endLimit** | **Double**| Ending limit. It needs to be consistent with the limitBy parameter. (For example, if you&#39;re limiting by timestamp, put here a UNIX time) | [optional]
+ **order** | **String**| This parameters defines the order, ascending or descending. Default is ascending | [optional] [enum: ascending, descending]
+ **appId** | **String**| Application ID. Used for the authentication | [optional]
+ **appKey** | **String**| Application key. Used for the authentication | [optional]
+
+### Return type
+
+**String**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: video/mp4
 

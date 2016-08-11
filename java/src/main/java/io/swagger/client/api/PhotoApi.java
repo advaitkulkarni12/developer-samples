@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-07-06T18:20:08.762+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-08-02T10:34:05.963+02:00")
 public class PhotoApi {
   private ApiClient apiClient;
 
@@ -218,7 +218,7 @@ public class PhotoApi {
       }
   /**
    * Post a photo using as a Base 64 encoded string. Screenshot returned.
-   * Process a photo using a Base 64 encoded string. It returns a JSON with all the emotions.
+   * Process a photo using a Base 64 encoded string and get back the screenshot. WARNING: The screenshot cannot be displayed in the UI. This will be fixed
    * @param bas64 Base 64 encoded image (required)
    * @param distance Distance is the distance at which the picture was taken. Near &#x3D; 1.5 m; Medium &#x3D; 3 m; Far &gt; 3 m. Default value is near. (optional)
    * @param multipleFaces If there are multiple faces in the region of interest, then you need to put this value to True. Default value is true. (optional)

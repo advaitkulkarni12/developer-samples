@@ -1,6 +1,6 @@
 # PhotoApi
 
-All URIs are relative to *http://127.0.0.1:8080/nviso/api/v2*
+All URIs are relative to *http://192.168.10.158:8080/nviso/api/v2*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -207,7 +207,7 @@ No authorization required
 
 Post a photo using as a Base 64 encoded string. Screenshot returned.
 
-Process a photo using a Base 64 encoded string. It returns a JSON with all the emotions.
+Process a photo using a Base 64 encoded string and get back the screenshot. WARNING: The screenshot cannot be displayed in the UI. This will be fixed
 
 ### Example
 ```java

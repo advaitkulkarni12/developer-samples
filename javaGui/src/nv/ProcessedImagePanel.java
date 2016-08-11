@@ -5,9 +5,11 @@
 package nv;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
@@ -16,6 +18,14 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import org.jcodec.api.JCodecException;
+import org.jcodec.api.awt.FrameGrab;
+import org.jcodec.common.FileChannelWrapper;
+import org.jcodec.common.NIOUtils;
+
+import com.googlecode.javacv.FFmpegFrameGrabber;
+import com.googlecode.javacv.cpp.opencv_core.IplImage;
+
 /**
  *
  * @author Kevin Georgy
@@ -23,9 +33,12 @@ import javax.swing.JPanel;
 public class ProcessedImagePanel extends JPanel implements Observer {
 
     private ProcessedImage processedImage = null;
+    private ProcessedVideo processedVideo = null;
     private BufferedImage  image = null;
     private Image  scaledImage = null;
     private float scaleFactor = 1.0f;
+    
+    private static FrameGrab grab;
     
     public void setProcessedImage(ProcessedImage img) {
         if (processedImage != null) {
@@ -38,6 +51,57 @@ public class ProcessedImagePanel extends JPanel implements Observer {
         } catch (IOException ex) {
             Logger.getLogger(ProcessedImagePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.repaint();
+    }
+    
+    public void setProcessedImage(ProcessedVideo video) {
+        if (processedVideo != null) {
+            processedVideo.deleteObserver(this);
+        }
+        processedVideo = video;
+        processedVideo.addObserver(this);
+        
+        /*FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(video.getVideoPath());
+    	try {
+			frameGrabber.start();
+			IplImage i;
+			i = frameGrabber.grab();
+			image = i.getBufferedImage();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+    	
+    	updateVideoFrame();
+    }
+    
+    public void updateVideoFrame() {
+    	if (processedImage != null) {
+            processedImage.deleteObserver(this);
+        }
+        //System.out.println(video.getImages().size());
+        if (processedVideo.getImages().size() != 0) {
+        	processedImage = processedVideo.getImages().get(processedVideo.getJsonFrame());
+        }
+        else {
+        	processedImage = new ProcessedImage(null);
+        }
+        processedImage.addObserver(this);
+        
+    	FileChannelWrapper ch;
+		try {
+			//ch = NIOUtils.readableFileChannel(video.getVideoPath());
+			//grab = new FrameGrab(ch);
+			image = processedVideo.getFrame(processedVideo.getVideoFrame());
+			//((FrameGrab) grab.seekToFramePrecise(0)).getFrame();
+			//image = FrameGrab.getFrame(video.getVideoPath(), 0);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JCodecException e) {
+			e.printStackTrace();
+		}
+		
         this.repaint();
     }
     
@@ -93,12 +157,14 @@ public class ProcessedImagePanel extends JPanel implements Observer {
     protected void paintComponent(Graphics g) {
         
         super.paintComponent(g);
+        this.setMinimumSize(new Dimension(150, 200));
         setScaledImage();
         // This call will paint the label and the focus rectangle.
         if (scaledImage != null) {
             g.drawImage(scaledImage, 0, 0, this);
-            if (processedImage.getFaces().size() > 0) {
-                ProcessedFace face = processedImage.getFaces().get(0);
+            //if (processedImage.getFaces().size() > 0) {
+            for (int i = 0; i < processedImage.getFaces().size(); ++i) {
+                ProcessedFace face = processedImage.getFaces().get(i);
                 
                 // Draw center + face rect
                 float scaledCenterX = (float) (face.getCenterX() * scaleFactor);
@@ -128,5 +194,13 @@ public class ProcessedImagePanel extends JPanel implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         this.repaint();
+    }
+    
+    public void increaseFrame() {
+    	processedVideo.increaseFrame();
+    }
+    
+    public int getJsonFrame() {
+    	return processedVideo.getJsonFrame();
     }
 }
