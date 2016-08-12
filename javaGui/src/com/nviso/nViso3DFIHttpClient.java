@@ -315,14 +315,21 @@ public void processEmotionImageByUpload(ProcessedImage processedImage) {
         String appKey = "AppKey";
         JSONObject jsonFull = new JSONObject();
         String jsonStringCompact;
+        String stringResponse = "response";
 		try {
-			String stringResponse = api.photoProcessUpload(processedImage.getImagePath(), "v2-Full", distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
-			System.out.println(stringResponse);
-			jsonFull = new JSONObject(stringResponse);
-			jsonStringCompact = formatResponse(stringResponse, "v1-Compact", null, null, null);
-			processedImage.fromJSON(new JSONObject(jsonStringCompact));
-			processedImage.setJSON(jsonFull);
-			processedImage.setProcessed();
+			stringResponse = api.photoProcessUpload(processedImage.getImagePath(), "v2-Full", distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+			//System.out.println("Json response : " + stringResponse + "!");
+			if (!stringResponse.isEmpty()) {
+				jsonFull = new JSONObject(stringResponse);
+				jsonStringCompact = formatResponse(stringResponse, "v1-Compact", null, null, null);
+				processedImage.fromJSON(new JSONObject(jsonStringCompact));
+				processedImage.setJSON(jsonFull);
+				processedImage.setProcessed();
+			}
+			else {
+				processedImage.setProcessingStatusCode("failed");
+				processedImage.setProcessed();
+			}
 		} catch (ApiException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -341,7 +348,7 @@ public void processEmotionImageByUpload(ProcessedImage processedImage) {
 		Key sessionKey;
 		String key = "";
 		try {
-			sessionKey = api.streamSessionStart(id, data, appId, appKey);
+			sessionKey = api.streamStart(id, data, appId, appKey);
 			key = sessionKey.getSessionKey();
 		} catch (ApiException e) {
 			e.printStackTrace();
@@ -351,7 +358,7 @@ public void processEmotionImageByUpload(ProcessedImage processedImage) {
         Double time = null;
         Double timestamp = null;
         String format = "v1-Compact";
-        String distance = "near";
+        String distance = "far";
         Boolean multipleFaces = false;
         Double xMin = 0.0;
         Double xMax = 1.0;
@@ -374,7 +381,7 @@ public void processEmotionImageByUpload(ProcessedImage processedImage) {
 			}
     	}
     	try {
-			api.streamSessionEnd(key, appId, appKey);
+			api.streamEnd(key, appId, appKey);
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}
@@ -397,9 +404,11 @@ public void processEmotionImageByUpload(ProcessedImage processedImage) {
     	VideoApi api = new VideoApi();
     	
     	Integer fps = 24;
+    	Integer width = 1280;
+        Integer height = 720;
     	Boolean enableFaceId = false;
-        String distance = "near";
-        Boolean multipleFaces = true;
+        String distance = "far";
+        Boolean multipleFaces = false;
         Double xMin = 0.0;
         Double xMax = 1.0;
         Double yMin = 0.0;
@@ -412,7 +421,7 @@ public void processEmotionImageByUpload(ProcessedImage processedImage) {
         String response;
 		try {
 			System.out.println("Start video processing.");
-			response = api.videoProcessUpload(processedVideo.getVideoPath(), fps, enableFaceId, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+			response = api.videoProcessUpload(processedVideo.getVideoPath(), fps, width, height, enableFaceId, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
 			System.out.println("End video processing.");
 			String responseCompact = formatResponseArray(response, "v1-Compact");
 			JSONArray responseJSON = new JSONArray(responseCompact);

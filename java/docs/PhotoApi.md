@@ -1,24 +1,24 @@
 # PhotoApi
 
-All URIs are relative to *http://192.168.10.158:8080/nviso/api/v2*
+All URIs are relative to *http://192.168.10.158:8800/nviso/api/v2*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**photoProcessBase64**](PhotoApi.md#photoProcessBase64) | **POST** /photo/process/base64 | Process a photo using a a Base 64 encoded string
-[**photoProcessUpload**](PhotoApi.md#photoProcessUpload) | **POST** /photo/process/upload | Post a photo to the API. JSON returned.
-[**photoProcessUrl**](PhotoApi.md#photoProcessUrl) | **GET** /photo/process/url | Process a photo given its URL.
-[**photoRenderBase64**](PhotoApi.md#photoRenderBase64) | **POST** /photo/render/base64 | Post a photo using as a Base 64 encoded string. Screenshot returned.
-[**photoRenderUpload**](PhotoApi.md#photoRenderUpload) | **POST** /photo/render/upload | Post a photo to the API. Screenshot returned.
-[**photoRenderUrl**](PhotoApi.md#photoRenderUrl) | **GET** /photo/render/url | Render a photo given its URL.
+[**photoProcessBase64**](PhotoApi.md#photoProcessBase64) | **POST** /photo/process/base64 | Process an uploaded Base64 encoded String in JPEG or PNG format returning result in a JSON format.
+[**photoProcessUpload**](PhotoApi.md#photoProcessUpload) | **POST** /photo/process/upload | Process an uploaded photo encoded in JPEG or PNG format returning result in a JSON format.
+[**photoProcessUrl**](PhotoApi.md#photoProcessUrl) | **GET** /photo/process/url | Process a JPEG or PNG image downloaded from provided URL returning result in a JSON format.
+[**photoRenderBase64**](PhotoApi.md#photoRenderBase64) | **POST** /photo/render/base64 | Process an uploaded Base64 encoded String in JPEG or PNG format returning result as rendered visualization.
+[**photoRenderUpload**](PhotoApi.md#photoRenderUpload) | **POST** /photo/render/upload | Process an uploaded photo encoded in JPEG or PNG format returning result as rendered visualization.
+[**photoRenderUrl**](PhotoApi.md#photoRenderUrl) | **GET** /photo/render/url | Process a JPEG or PNG image downloaded from provided URL returning result as rendered visualization.
 
 
 <a name="photoProcessBase64"></a>
 # **photoProcessBase64**
 > String photoProcessBase64(bas64, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey)
 
-Process a photo using a a Base 64 encoded string
+Process an uploaded Base64 encoded String in JPEG or PNG format returning result in a JSON format.
 
-Process a photo using a Base 64 encoded string. It returns a JSON with all the emotions.
+Process an uploaded Base64 encoded String in JPEG or PNG format returning result in a JSON format. Same options as /photo/process/upload.
 
 ### Example
 ```java
@@ -79,9 +79,9 @@ No authorization required
 # **photoProcessUpload**
 > String photoProcessUpload(file, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey)
 
-Post a photo to the API. JSON returned.
+Process an uploaded photo encoded in JPEG or PNG format returning result in a JSON format.
 
-Post a single photo to the API and get back the JSON response.
+Process an uploaded photo encoded in JPEG or PNG format returning result in JSON format. Options that can be set to process the image include specifying if multiple faces should be detected, the distance of the faces that should be detected from the camera, and if a region of interest should be set to restrict processing of faces within the specified region of interest.
 
 ### Example
 ```java
@@ -142,9 +142,9 @@ No authorization required
 # **photoProcessUrl**
 > String photoProcessUrl(url, format, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey)
 
-Process a photo given its URL.
+Process a JPEG or PNG image downloaded from provided URL returning result in a JSON format.
 
-Process a photo using its URL. It returns a JSON with all the emotions.
+Process a JPEG or PNG image downloaded from provided URL returning result in a JSON format. Same options as /photo/process/upload.
 
 ### Example
 ```java
@@ -205,9 +205,9 @@ No authorization required
 # **photoRenderBase64**
 > String photoRenderBase64(bas64, distance, multipleFaces, enableFooter, dimSecFaces, xMin, xMax, yMin, yMax, appId, appKey)
 
-Post a photo using as a Base 64 encoded string. Screenshot returned.
+Process an uploaded Base64 encoded String in JPEG or PNG format returning result as rendered visualization.
 
-Process a photo using a Base 64 encoded string and get back the screenshot. WARNING: The screenshot cannot be displayed in the UI. This will be fixed
+Process an uploaded Base64 encoded String in JPEG or PNG format returning result in JSON format. Same options as /photo/process/upload. Note this function is only available if workers have been configured with OpenGL rendering.
 
 ### Example
 ```java
@@ -270,9 +270,9 @@ No authorization required
 # **photoRenderUpload**
 > String photoRenderUpload(file, distance, multipleFaces, enableFooter, dimSecFaces, xMin, xMax, yMin, yMax, appId, appKey)
 
-Post a photo to the API. Screenshot returned.
+Process an uploaded photo encoded in JPEG or PNG format returning result as rendered visualization.
 
-Post a single photo to the API and get back the screenshot. WARNING: The screenshot cannot be displayed in the UI. This will be fixed
+Process an uploaded photo encoded in JPEG or PNG format returning result in JSON format. Same options as /photo/process/upload. Note this function is only available if workers have been configured with OpenGL rendering.
 
 ### Example
 ```java
@@ -335,9 +335,9 @@ No authorization required
 # **photoRenderUrl**
 > String photoRenderUrl(url, distance, multipleFaces, enableFooter, dimSecFaces, xMin, xMax, yMin, yMax, appId, appKey)
 
-Render a photo given its URL.
+Process a JPEG or PNG image downloaded from provided URL returning result as rendered visualization.
 
-Render a photo using its URL. It returns a screenshot of the processed photo.
+Process a JPEG or PNG image downloaded from provided URL returning result in JSON format. Same options as /photo/process/upload. Note this function is only available if workers have been configured with OpenGL rendering.
 
 ### Example
 ```java

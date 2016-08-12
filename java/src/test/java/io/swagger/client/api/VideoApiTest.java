@@ -28,6 +28,7 @@ package io.swagger.client.api;
 import io.swagger.client.ApiException;
 import java.io.File;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -57,6 +58,8 @@ public class VideoApiTest {
     public void videoProcessUploadTest() throws ApiException {
         File file = new File("src/test/java/io/swagger/client/api/data/dataVideo/small-video.mp4");
         Integer fps = 24;
+        Integer width = 1280;
+        Integer height = 720;
         Boolean enableFaceId = false;
         String distance = "near";
         Boolean multipleFaces = true;
@@ -67,7 +70,7 @@ public class VideoApiTest {
         String appId = "AppId";
         String appKey = "AppKey";
 
-        String response = api.videoProcessUpload(file, fps, enableFaceId, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
+        String response = api.videoProcessUpload(file, fps, width, height, enableFaceId, distance, multipleFaces, xMin, xMax, yMin, yMax, appId, appKey);
 
 		//System.out.println(response);
 

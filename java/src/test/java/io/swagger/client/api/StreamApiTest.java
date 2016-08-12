@@ -92,7 +92,7 @@ public class StreamApiTest {
         String data = "{\"info\": \"Test for example\"}";
         String appId = "AppId";
         String appKey = "AppKey";
-		Key sessionKey = api.streamSessionStart(id, data, appId, appKey);
+		Key sessionKey = api.streamStart(id, data, appId, appKey);
 		
         File file = new File("src/test/java/io/swagger/client/api/data/dataStream/RID_105440_000.jpg");
         String key = sessionKey.getSessionKey();
@@ -109,7 +109,8 @@ public class StreamApiTest {
 		Boolean enableFooter = true;
 		Boolean dimSecFaces = true;
         String response = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
-
+        
+        api.streamEnd(key, appId, appKey);
 		//System.out.println(response);
     }
     
@@ -152,13 +153,13 @@ public class StreamApiTest {
      */
     @Test
     public void streamSessionDataTest() throws ApiException {
-		/*System.out.println("\n");
+		System.out.println("\n");
 		System.out.println("Test of the Stream query in csv format :");
 		String id = "sessionId";
         String data = "{\"info\": \"Test for example\"}";
         String appId = "AppId";
         String appKey = "AppKey";
-		Key sessionKey = api.streamSessionStart(id, data, appId, appKey);
+		Key sessionKey = api.streamStart(id, data, appId, appKey);
 		
         String key = sessionKey.getSessionKey();
         Double score = null;
@@ -186,7 +187,7 @@ public class StreamApiTest {
 			String response_i = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
 		}
 
-		api.streamSessionEnd(key, appId, appKey);
+		api.streamEnd(key, appId, appKey);
 
 
         String dataFormat = "basic";
@@ -195,9 +196,9 @@ public class StreamApiTest {
         Double startLimit = 0.0;
         Double endLimit = 2000000000.0;
         String order = "ascending";
-        String response = api.streamSessionData(key, dataFormat, sortBy, limitBy, startLimit, endLimit, order, appId, appKey);
+        String response = api.streamQueryCsv(key, dataFormat, sortBy, limitBy, startLimit, endLimit, order, appId, appKey);
 
-		System.out.println(response);*/
+		System.out.println(response);
     }
     
     /**
@@ -270,13 +271,13 @@ public class StreamApiTest {
      */
     @Test
     public void streamSessionQueryTest() throws ApiException {
-		/*System.out.println("\n");
+		System.out.println("\n");
 		System.out.println("Test of the Stream query :");
         String id = "sessionId";
         String data = "{\"info\": \"Test for example\"}";
         String appId = "AppId";
         String appKey = "AppKey";
-		Key sessionKey = api.streamSessionStart(id, data, appId, appKey);
+		Key sessionKey = api.streamStart(id, data, appId, appKey);
 		
         String key = sessionKey.getSessionKey();
         Double score = null;
@@ -304,7 +305,7 @@ public class StreamApiTest {
 			String response_i = api.streamProcessUpload(file, key, score, time, timestamp, format, distance, multipleFaces, xMin, xMax, yMin, yMax, enableFooter, dimSecFaces, appId, appKey);
 		}
 
-		api.streamSessionEnd(key, appId, appKey);
+		api.streamEnd(key, appId, appKey);
 
         String dataFormat = "v2-Full";
         String sortBy = "timestamp";
@@ -312,7 +313,7 @@ public class StreamApiTest {
         Double startLimit = 0.0;
         Double endLimit = 2000000000.0;
         String order = "ascending";
-        String response = api.streamSessionQuery(key, dataFormat, sortBy, limitBy, startLimit, endLimit, order, appId, appKey);
+        String response = api.streamQueryJson(key, dataFormat, sortBy, limitBy, startLimit, endLimit, order, appId, appKey);
 
 		//System.out.println(response);
 
@@ -358,7 +359,6 @@ public class StreamApiTest {
 				System.out.println(".");
 			}
 		}
-		*/
     }
     
     /**
@@ -375,7 +375,7 @@ public class StreamApiTest {
         String data = "{\"info\": \"Test for example\"}";
         String appId = "AppId";
         String appKey = "AppKey";
-		Key sessionKey = api.streamSessionStart(id, data, appId, appKey);
+		Key sessionKey = api.streamStart(id, data, appId, appKey);
 
 		System.out.println(sessionKey.getSessionKey());
 

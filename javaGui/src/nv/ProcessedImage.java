@@ -67,6 +67,7 @@ public class ProcessedImage extends Observable{
     
     synchronized public void setProcessing() {
         state = State.Processing;
+        faces.clear();
         changed();
     }
     
